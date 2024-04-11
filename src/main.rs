@@ -9,6 +9,8 @@ fn main() {
     // Convert total energy consumption from millijoules to kilowatt-hours
     let total_energy_kwh = total_energy_millijoules / 3_600_000;
 
+    print!("\x1B[2J\x1B[1;1H");
+
     println!("Total Energy Consumption: {} kWh", total_energy_kwh);
 
     println!("GPU_name: {:?}", device.name().unwrap());
