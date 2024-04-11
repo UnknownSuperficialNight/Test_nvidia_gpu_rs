@@ -3,19 +3,23 @@ fn main() {
     let nvml = Nvml::init().unwrap();
     // Get the first `Device` (GPU) in the system
     let device = nvml.device_by_index(0).unwrap();
-    println!("device: {:?}", device);
-    println!("pci_info: {:?}", device.pci_info().unwrap());
-    println!(
-        "performance_state: {:?}",
-        device.performance_state().unwrap()
-    );
-    println!(
-        "total_energy_consumption: {:?}",
-        device.total_energy_consumption().unwrap()
-    );
-    println!("name: {:?}", device.name().unwrap());
+    // Get the total energy consumption in millijoules
+    let total_energy_millijoules = device.total_energy_consumption().unwrap();
+
+    // Convert total energy consumption from millijoules to kilowatt-hours
+    let total_energy_kwh = total_energy_millijoules / 3_600_000;
+
+    println!("Total Energy Consumption: {} kWh", total_energy_kwh);
+
+    println!("GPU_name: {:?}", device.name().unwrap());
     println!("fan_speed: {:?}", device.fan_speed(0).unwrap());
     println!("num_fans: {:?}", device.num_fans().unwrap());
-    println!("encoder_util: {:?}", device.encoder_utilization().unwrap());
-    println!("memory_info: {:?}", device.memory_info().unwrap()); // Currently 1.63/6.37 GB used on my system
+    let memory_info = device.memory_info().unwrap();
+    let free_memory_gib = memory_info.free as f64 / 1073741824.0;
+    let total_memory_gib = memory_info.total as f64 / 1073741824.0;
+    let used_memory_gib = memory_info.used as f64 / 1073741824.0;
+    println!(
+        "Free Memory (GiB): {:.2} | Total Memory (GiB): {:.2} | Used Memory (GiB): {:.2}",
+        free_memory_gib, total_memory_gib, used_memory_gib
+    );
 }
